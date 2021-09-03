@@ -1,0 +1,111 @@
+{
+  "terrainList": [
+    {
+      "id": "Plains",
+      "textMapperSvgClass": "plain",
+      "terrainDieResultMap": {
+        "1..14": "Plains",
+        "15..16": "Water",
+        "17..18": "Forest",
+        "19..19": "Hills",
+        "20..20": "Desert"
+      }
+    },
+    {
+      "id": "Hills",
+      "textMapperSvgClass": "hill",
+      "terrainDieResultMap": {
+        "1..14": "Hills",
+        "15..16": "Forest",
+        "17..18": "Mountains",
+        "19..19": "Plains",
+        "20..20": "Barrens"
+      }
+    },
+    {
+      "id": "Forest",
+      "textMapperSvgClass": "forest",
+      "terrainDieResultMap": {
+        "1..14": "Forest",
+        "15..17": "Mountains",
+        "18..19": "Hills",
+        "20..20": "Plains"
+      }
+    },
+    {
+      "id": "Water",
+      "textMapperSvgClass": "sea",
+      "terrainDieResultMap": {
+        "1..16": "Water",
+        "17..19": "Swamp",
+        "20..20": "Plains"
+      }
+    },
+    {
+      "id": "Mountains",
+      "textMapperSvgClass": "mountain",
+      "terrainDieResultMap": {
+        "1..14": "Mountains",
+        "15..16": "Tundra",
+        "17..18": "Barrens",
+        "19..19": "Hills",
+        "20..20": "Forest"
+      }
+    },
+    {
+      "id": "Swamp",
+      "textMapperSvgClass": "swamp",
+      "terrainDieResultMap": {
+        "1..15": "Swamp",
+        "16..19": "Water",
+        "20..20": "Plains"
+      }
+    },
+    {
+      "id": "Barrens",
+      "textMapperSvgClass": "coast",
+      "terrainDieResultMap": {
+        "1..14": "Barrens",
+        "15..17": "Mountains",
+        "18..18": "Hills",
+        "19..19": "Desert",
+        "20..20": "Tundra"
+      }
+    },
+    {
+      "id": "Desert",
+      "textMapperSvgClass": "sand",
+      "terrainDieResultMap": {
+        "1..16": "Desert",
+        "17..18": "Plains",
+        "19..19": "Hills",
+        "20..20": "Barrens"
+      }
+    },
+    {
+      "id": "Tundra",
+      "textMapperSvgClass": "tundra",
+      "terrainDieResultMap": {
+        "1..15": "Tundra",
+        "16..18": "Mountains",
+        "19..19": "Forest",
+        "20..20": "Barrens"
+      }
+    }
+  ],
+  "fillDirectionDieResultMap": {
+    "1..2": "NorthClockwise",
+    "3..4": "NorthCounterclockwise",
+    "5..6": "SouthClockwise",
+    "7..8": "SouthCounterclockwise"
+  },
+  "rarityDieResultMapTwoInputs": {
+    "1..4": "Uncommon",
+    "5..6": "Common"
+  },
+  "rarityDieResultMapThreeInputs": {
+    "1..3": "Uncommon",
+    "4..5": "Middle",
+    "6..6": "Common"
+  }
+}
