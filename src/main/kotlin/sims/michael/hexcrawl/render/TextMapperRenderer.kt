@@ -24,10 +24,3 @@ class TextMapperRenderer(private val config: HexCrawlConfiguration): GridRendere
         return renderSb.toString()
     }
 }
-
-/*
-0101 empty "joe"
-
-include /home/alex/perl5/perlbrew/perls/perl-5.32.0/lib/site_perl/5.32.0/auto/share/dist/Game-TextMapper/default.txt
-
- */
