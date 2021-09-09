@@ -48,7 +48,7 @@ data class CubeCoordinate(val q: Int, val r: Int, val s: Int = -q - r) {
         HexSide.orderedByFillDirection(fillDirection).map { side -> getAdjacentPoint(side) }
 
     private fun getAdjacentPoint(hexSide: HexSide): CubeCoordinate = when (hexSide) {
-        N -> CubeCoordinate(q, r - 1);
+        N -> CubeCoordinate(q, r - 1)
         NE -> CubeCoordinate(q + 1, r - 1)
         SE -> CubeCoordinate(q + 1, r)
         S -> CubeCoordinate(q, r + 1)

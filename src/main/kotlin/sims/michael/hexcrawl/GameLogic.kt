@@ -57,7 +57,7 @@ class GameLogic(
     private fun rollTerrainDie(terrain: Terrain): Terrain =
         checkNotNull(config.idToTerrainMap[rollDie(terrain.id, terrain.terrainDieResultMap)])
 
-    fun <T> rollDie(id: String, dieResultsMap: Map<IntRange, T>): T {
+    private fun <T> rollDie(id: String, dieResultsMap: Map<IntRange, T>): T {
         val dieSize = dieResultsMap.keys.mergeRanges().let { merged -> merged.last - merged.first + 1 }
         val dieRoll = random.nextInt(dieSize) + 1
         return dieResultsMap

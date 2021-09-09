@@ -10,6 +10,7 @@ interface Random {
         fun javaUtilRandom(seed: Long? = null) =
             JavaUtilRandomAdapter(if (seed == null) JavaUtilRandom() else JavaUtilRandom(seed))
 
+        @Suppress("unused")
         fun secureRandom() = SecureRandomAdapter(SecureRandom())
     }
 }

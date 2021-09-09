@@ -1,7 +1,6 @@
 package sims.michael.hexcrawl.render
 
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import sims.michael.hexcrawl.CubeCoordinate
 import sims.michael.hexcrawl.MutableGrid
 import sims.michael.hexcrawl.TestConfiguration

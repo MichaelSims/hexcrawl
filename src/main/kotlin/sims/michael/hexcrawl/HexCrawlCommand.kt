@@ -30,17 +30,16 @@ class HexCrawlCommand : CliktCommand() {
         }
     }
 
-    private val pwd: File = System.getProperty("user.dir").let(::File)
+    private val pwd: File = File(requireNotNull(System.getProperty("user.dir")))
 
     private fun fromPropertiesFileInPwd(): ValueSource? {
-        return pwd?.let { pwd ->
-            val propertiesFile = File(pwd, "hexcrawl.cfg")
-            if (propertiesFile.exists()) {
-                logger.info("Reading config from ${propertiesFile.absolutePath}")
-            } else {
-                logger.warn("No config file found at ${propertiesFile.absolutePath}")
-            }
+        val propertiesFile = File(pwd, "hexcrawl.cfg")
+        return if (propertiesFile.exists()) {
+            logger.info("Reading config from ${propertiesFile.absolutePath}")
             PropertiesValueSource.from(propertiesFile)
+        } else {
+            logger.warn("No config file found at ${propertiesFile.absolutePath}")
+            null
         }
     }
 
