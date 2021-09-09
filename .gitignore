@@ -15,3 +15,7 @@ out/
 
 # Ignore Gradle build output directory
 build
+
+/hexcrawl.cfg
+/config.json
+/output.txt
