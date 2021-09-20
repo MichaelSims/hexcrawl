@@ -71,6 +71,11 @@ fun CubeCoordinate.toOffsetCoordinate() = OffsetCoordinate(
     r = r + (q + (q and 1)) / 2
 )
 
+fun OffsetCoordinate.toCubeCoordinate() = CubeCoordinate(
+    q = q,
+    r = r - (q + (q and 1)) / 2
+)
+
 /** Returns a sequence of [CubeCoordinate]s that form an endless clockwise spiral from [this]. */
 fun CubeCoordinate.getSpiralPath(): Sequence<CubeCoordinate> = sequence {
     var q = q

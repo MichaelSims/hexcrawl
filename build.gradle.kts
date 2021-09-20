@@ -28,6 +28,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.5")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
+    implementation("org.apache.xmlgraphics:batik-all:1.14")
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
