@@ -19,3 +19,4 @@ build
 /hexcrawl.cfg
 /config.json
 /output.txt
+/*.svg
