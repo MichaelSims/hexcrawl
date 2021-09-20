@@ -1,12 +1,15 @@
 package sims.michael.hexcrawl.render
 
 import org.junit.jupiter.api.Test
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import sims.michael.hexcrawl.*
 import java.nio.file.Files
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.writeText
 
 class SvgGridRendererTest {
+
+    private val logger: Logger = LoggerFactory.getLogger(SvgGridRendererTest::class.java)
 
     private val testGridSpiral = MutableGrid().apply {
         CubeCoordinate.ZERO.getSpiralPath().take(30).forEachIndexed { i, cubeCoordinate ->
@@ -35,11 +38,13 @@ class SvgGridRendererTest {
     fun testSquareRender() = renderAndOpen(testGridSquare)
 
     private fun renderAndOpen(grid: MutableGrid) {
-        val output = SvgGridRenderer(TestConfiguration).render(grid)
-        val tempFile = Files.createTempFile(SvgGridRendererTest::class.simpleName, ".svg")
-        tempFile.writeText(output)
-        ProcessBuilder()
-            .command("open", tempFile.absolutePathString())
-            .start()
+        val tempDir = Files.createTempDirectory(SvgGridRendererTest::class.simpleName).toFile()
+        val files = SvgGridRenderer(TestConfiguration).renderToFile(grid, tempDir, "000")
+        logger.debug("$files")
+        for (file in files) {
+            ProcessBuilder()
+                .command("open", file.absolutePath)
+                .start()
+        }
     }
 }

@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory
 import sims.michael.hexcrawl.render.GridRenderer
 import java.io.File
 import java.nio.file.Paths
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class HexCrawlCommand : CliktCommand() {
@@ -78,28 +81,40 @@ class HexCrawlCommand : CliktCommand() {
         .enum(key = GridRenderer.RendererId::optionName)
         .default(GridRenderer.RendererId.Ascii)
 
-    private val outputFile by option(help = "Output file for the rendered map")
-        .convert { Paths.get(it).toFile() }
-        .required()
+    private val numMapsToCreate by option(help = "The number of maps to render.")
+        .int()
+        .default(1)
+        .check { it > 0 }
 
     override fun run() {
         logEffectiveConfig(logger)
-        val path: Deque<CubeCoordinate> = ArrayDeque(CubeCoordinate.ZERO.getSpiralPath().take(pathLength).toList())
 
-        val grid = MutableGrid().apply {
-            for (pathPoint in path) {
-                for (point in listOf(pathPoint) + pathPoint.getAdjacentPoints(gameLogic.rollFillDirectionDie())) {
-                    if (get(point) == null) {
-                        logger.debug("Rolling terrain for ${point.toOffsetCoordinate()}")
-                        set(point, gameLogic.rollTerrainDie(this, point).id)
+        val outputDirectory = File("maps_${getTimestampDirName()}").apply { mkdir() }
+
+        val gridRenderer = GridRenderer.getRendererById(rendererId, config)
+
+        for (sequenceNumber in 0 until numMapsToCreate) {
+
+            val path: Deque<CubeCoordinate> = ArrayDeque(CubeCoordinate.ZERO.getSpiralPath().take(pathLength).toList())
+
+            val grid = MutableGrid().apply {
+                for (pathPoint in path) {
+                    for (point in listOf(pathPoint) + pathPoint.getAdjacentPoints(gameLogic.rollFillDirectionDie())) {
+                        if (get(point) == null) {
+                            logger.debug("Rolling terrain for ${point.toOffsetCoordinate()}")
+                            set(point, gameLogic.rollTerrainDie(this, point).id)
+                        }
                     }
                 }
             }
+
+            gridRenderer.renderToFile(grid, outputDirectory, "%03d".format(sequenceNumber))
         }
 
-        val rendered = GridRenderer.getRendererById(rendererId, config).render(grid)
-        outputFile.writeText(rendered)
-        logger.debug("Output written to $outputFile: $rendered")
+        logger.info("Files written to $outputDirectory")
+        ProcessBuilder()
+            .command("open", outputDirectory.absolutePath)
+            .start()
     }
 
     private fun logEffectiveConfig(logger: Logger) {
@@ -122,5 +137,8 @@ class HexCrawlCommand : CliktCommand() {
             }
             .toMap()
     }
+
+    private fun getTimestampDirName() =
+        LocalDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME).replace("[:.]".toRegex(), "_")
 
 }

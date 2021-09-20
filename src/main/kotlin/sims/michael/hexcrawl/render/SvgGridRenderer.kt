@@ -1,12 +1,19 @@
 package sims.michael.hexcrawl.render
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
+import org.apache.batik.transcoder.TranscoderInput
+import org.apache.batik.transcoder.TranscoderOutput
+import org.apache.batik.transcoder.image.ImageTranscoder
+import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.util.XMLResourceDescriptor
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 import sims.michael.hexcrawl.*
+import java.awt.Color
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
 import java.io.InputStream
-import java.io.StringWriter
 import java.math.BigDecimal
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
@@ -17,12 +24,17 @@ class SvgGridRenderer(private val config: HexCrawlConfiguration) : GridRenderer 
 
     private val logger = LoggerFactory.getLogger(SvgGridRenderer::class.java)
 
-    override fun render(grid: MutableGrid): String =
+    override fun renderToFile(grid: MutableGrid, parentDirectory: File, fileNumber: String) =
         requireNotNull(SvgGridRenderer::class.java.getResourceAsStream("template.svg")).use { template ->
-            renderWithTemplate(template, grid)
+            renderWithTemplate(template, grid, parentDirectory, fileNumber)
         }
 
-    private fun renderWithTemplate(template: InputStream, grid: MutableGrid): String {
+    private fun renderWithTemplate(
+        template: InputStream,
+        grid: MutableGrid,
+        outputDirectory: File,
+        sequenceNumber: String
+    ): List<File> {
         val doc = SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName())
             .createDocument(null, template)
 
@@ -107,19 +119,41 @@ class SvgGridRenderer(private val config: HexCrawlConfiguration) : GridRenderer 
             }
         }
 
-        val stringWriter = StringWriter()
-        TransformerFactory
-            .newInstance()
-            .newTransformer()
-            .apply {
-                setOutputProperty(OutputKeys.INDENT, "yes")
-                setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-                setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
-                setOutputProperty(OutputKeys.METHOD, "xml")
-                setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+        val svgFile = File(outputDirectory, "map$sequenceNumber.svg")
+        writeToSvgFile(doc, svgFile)
+        val jpgFile = File(outputDirectory, "map$sequenceNumber.png")
+        writeToImageFile(svgFile, jpgFile)
+        return listOf(svgFile, jpgFile)
+    }
+
+    private fun writeToSvgFile(doc: Document, svgFile: File) {
+        FileWriter(svgFile).use { writer ->
+            TransformerFactory
+                .newInstance()
+                .newTransformer()
+                .apply {
+                    setOutputProperty(OutputKeys.INDENT, "yes")
+                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                    setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
+                    setOutputProperty(OutputKeys.METHOD, "xml")
+                    setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+                }
+                .transform(DOMSource(doc), StreamResult(writer))
+        }
+    }
+
+    private fun writeToImageFile(inputSvg: File, outputImage: File) {
+        inputSvg.inputStream().use { inputStream ->
+            FileOutputStream(outputImage).use { outputStream ->
+                PNGTranscoder()
+                    .apply {
+                        addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR, Color.white)
+                        addTranscodingHint(PNGTranscoder.KEY_WIDTH, 1000f)
+                        addTranscodingHint(PNGTranscoder.KEY_HEIGHT, 1000f)
+                    }
+                    .transcode(TranscoderInput(inputStream), TranscoderOutput(outputStream))
             }
-            .transform(DOMSource(doc), StreamResult(stringWriter))
-        return stringWriter.toString()
+        }
     }
 
     private fun Document.setViewBoxAttribute(grid: MutableGrid) {

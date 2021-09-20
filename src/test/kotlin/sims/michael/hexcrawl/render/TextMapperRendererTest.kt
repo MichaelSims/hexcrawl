@@ -5,6 +5,7 @@ import sims.michael.hexcrawl.CubeCoordinate
 import sims.michael.hexcrawl.MutableGrid
 import sims.michael.hexcrawl.TestConfiguration
 import sims.michael.hexcrawl.getSpiralPath
+import java.nio.file.Files
 
 class TextMapperRendererTest {
 
@@ -16,6 +17,10 @@ class TextMapperRendererTest {
 
     @Test
     fun testRender() {
-        println(GridRenderer.getTextMapperRenderer(TestConfiguration).render(testGrid))
+        val tempDir = Files.createTempDirectory(TextMapperRendererTest::class.simpleName).toFile()
+        println(
+            GridRenderer.getTextMapperRenderer(TestConfiguration).renderToFile(testGrid, tempDir, "000").first()
+                .readText()
+        )
     }
 }

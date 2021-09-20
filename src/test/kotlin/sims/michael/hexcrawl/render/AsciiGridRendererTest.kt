@@ -5,6 +5,7 @@ import sims.michael.hexcrawl.CubeCoordinate
 import sims.michael.hexcrawl.MutableGrid
 import sims.michael.hexcrawl.TestConfiguration
 import sims.michael.hexcrawl.getSpiralPath
+import java.nio.file.Files
 
 class AsciiGridRendererTest {
 
@@ -18,6 +19,7 @@ class AsciiGridRendererTest {
 
     @Test
     fun testRender() {
-        println(GridRenderer.getAsciiRenderer().render(testGrid))
+        val tempDir = Files.createTempDirectory(AsciiGridRendererTest::class.simpleName).toFile()
+        println(GridRenderer.getAsciiRenderer().renderToFile(testGrid, tempDir, "000").first().readText())
     }
 }

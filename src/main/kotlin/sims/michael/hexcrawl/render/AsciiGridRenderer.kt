@@ -4,16 +4,17 @@ import dk.ilios.asciihexgrid.AsciiBoard
 import dk.ilios.asciihexgrid.printers.LargeFlatAsciiHexPrinter
 import sims.michael.hexcrawl.CubeCoordinate
 import sims.michael.hexcrawl.MutableGrid
+import java.io.File
 
 class AsciiGridRenderer : GridRenderer {
 
-    override fun render(grid: MutableGrid): String {
+    override fun renderToFile(grid: MutableGrid, parentDirectory: File, fileNumber: String): List<File> {
         // AsciiBoard can't handle negative columns or rows, so we need to translate the grid first
         val translated = grid.translate(-grid.qRange.first, -grid.rRange.first)
-        return renderAsAsciiBoard(translated)
+        return renderAsAsciiBoard(translated, parentDirectory, fileNumber)
     }
 
-    private fun renderAsAsciiBoard(grid: MutableGrid): String {
+    private fun renderAsAsciiBoard(grid: MutableGrid, parentDirectory: File, fileNumber: String): List<File> {
         val board = AsciiBoard(
             grid.qRange.first,
             grid.qRange.last,
@@ -31,6 +32,8 @@ class AsciiGridRenderer : GridRenderer {
             }
         }
 
-        return board.prettyPrint(true)
+        val outputFile = File(parentDirectory, "map$fileNumber.txt")
+        outputFile.writeText(board.prettyPrint(true))
+        return listOf(outputFile)
     }
 }

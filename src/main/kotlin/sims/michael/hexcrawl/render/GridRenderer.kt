@@ -2,9 +2,10 @@ package sims.michael.hexcrawl.render
 
 import sims.michael.hexcrawl.HexCrawlConfiguration
 import sims.michael.hexcrawl.MutableGrid
+import java.io.File
 
 interface GridRenderer {
-    fun render(grid: MutableGrid): String
+    fun renderToFile(grid: MutableGrid, parentDirectory: File, fileNumber: String): List<File>
 
     enum class RendererId(val optionName: String) {
         Ascii("ascii"), TextMapper("text-mapper"), Svg("svg")
